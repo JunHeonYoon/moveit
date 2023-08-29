@@ -72,5 +72,20 @@ public:
 
   void distanceSelf(const DistanceRequest& req, DistanceResult& res,
                     const moveit::core::RobotState& state) const override;
+//-----------------------------------------------------------------------------------------------
+  void checkRobotVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                           const moveit::core::RobotState& state) const override;
+  void checkRobotVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res, const moveit::core::RobotState& state,
+                           const AllowedCollisionMatrix& acm) const override;
+  void checkSelfVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                          const moveit::core::RobotState& state) const override;
+  void checkSelfVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res, const moveit::core::RobotState& state,
+                          const AllowedCollisionMatrix& acm) const override;
+  void distanceRobotVector(const DistanceRequest& req, std::vector<DistanceResult>& res,
+                     const moveit::core::RobotState& state) const override;
+  void distanceSelfVector(const DistanceRequest& req, std::vector<DistanceResult>& res,
+                    const moveit::core::RobotState& state) const override;
+//-----------------------------------------------------------------------------------------------
+
 };
 }  // namespace collision_detection

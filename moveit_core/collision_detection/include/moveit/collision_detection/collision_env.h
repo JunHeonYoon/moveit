@@ -226,6 +226,62 @@ public:
     return res.minimum_distance.distance;
   }
 
+
+  //------------------------------------------------------------------------------------------------------------------
+  /** @brief Check for robot self collision. Any collision between any pair of links is checked for, NO collisions are
+   *   ignored.
+   *
+   *  @param req A CollisionRequest object that encapsulates the collision request
+   *  @param res A CollisionResult object that encapsulates the collision result
+   *  @param state The kinematic state for which checks are being made */
+  virtual void checkSelfVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                                        const moveit::core::RobotState& state) const = 0;
+
+  /** \brief Check for self collision. Allowed collisions specified by the allowed collision matrix are
+   *   taken into account.
+   *  @param req A CollisionRequest object that encapsulates the collision request
+   *  @param res A CollisionResult object that encapsulates the collision result
+   *  @param state The kinematic state for which checks are being made
+   *  @param acm The allowed collision matrix. */
+  virtual void checkSelfVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                                        const moveit::core::RobotState& state, const AllowedCollisionMatrix& acm) const = 0;
+
+  /** \brief Check whether the robot model is in collision with the world. Any collisions between a robot link
+   *  and the world are considered. Self collisions are not checked.
+   *  @param req A CollisionRequest object that encapsulates the collision request
+   *  @param res A CollisionResult object that encapsulates the collision result
+   *  @param robot The collision model for the robot
+   *  @param state The kinematic state for which checks are being made
+   */
+  virtual void checkRobotVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                                         const moveit::core::RobotState& state) const = 0;
+
+  /** \brief Check whether the robot model is in collision with the world.
+   *  Allowed collisions are ignored. Self collisions are not checked.
+   *  @param req A CollisionRequest object that encapsulates the collision request
+   *  @param res A CollisionResult object that encapsulates the collision result
+   *  @param robot The collision model for the robot
+   *  @param state The kinematic state for which checks are being made
+   *  @param acm The allowed collision matrix.*/
+  virtual void checkRobotVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                                         const moveit::core::RobotState& state, const AllowedCollisionMatrix& acm) const = 0;
+
+  /** \brief The distance to self-collision given the robot is at state \e state.
+      @param req A DistanceRequest object that encapsulates the distance request
+      @param res A DistanceResult object that encapsulates the distance result
+      @param state The state of this robot to consider */
+  virtual void distanceSelfVector(const DistanceRequest& req, std::vector<DistanceResult>& res,
+                                  const moveit::core::RobotState& state) const = 0;
+
+  /** \brief Compute the distance between a robot and the world
+   *  @param req A DistanceRequest object that encapsulates the distance request
+   *  @param res A DistanceResult object that encapsulates the distance result
+   *  @param state The state for the robot to check distances from */
+  virtual void distanceRobotVector(const DistanceRequest& req, std::vector<DistanceResult>& res,
+                                   const moveit::core::RobotState& state) const = 0;
+  //------------------------------------------------------------------------------------------------------------------
+
+
   /** set the world to use.
    * This can be expensive unless the new and old world are empty.
    * Passing NULL will result in a new empty world being created. */

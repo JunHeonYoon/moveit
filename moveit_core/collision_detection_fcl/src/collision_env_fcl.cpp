@@ -352,8 +352,143 @@ void CollisionEnvFCL::distanceRobot(const DistanceRequest& req, DistanceResult& 
 
   DistanceData drd(&req, &res);
   for (std::size_t i = 0; !drd.done && i < fcl_obj.collision_objects_.size(); ++i)
+  {
     manager_->distance(fcl_obj.collision_objects_[i].get(), &drd, &distanceCallback);
+  }
 }
+
+
+//------------------------------------------------------------------------------------------------------------------
+void CollisionEnvFCL::checkSelfVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                                          const moveit::core::RobotState& state) const
+{
+  checkSelfVectorCollisionHelper(req, res, state, nullptr);
+}
+
+void CollisionEnvFCL::checkSelfVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                                          const moveit::core::RobotState& state,
+                                          const AllowedCollisionMatrix& acm) const
+{
+  checkSelfVectorCollisionHelper(req, res, state, &acm);
+}
+
+void CollisionEnvFCL::checkRobotVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                                          const moveit::core::RobotState& state) const
+{
+  checkRobotVectorCollisionHelper(req, res, state, nullptr);
+}
+
+void CollisionEnvFCL::checkRobotVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                                          const moveit::core::RobotState& state,
+                                          const AllowedCollisionMatrix& acm) const
+{
+  checkRobotVectorCollisionHelper(req, res, state, &acm);
+}
+
+void CollisionEnvFCL::checkSelfVectorCollisionHelper(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                                                const moveit::core::RobotState& state,
+                                                const AllowedCollisionMatrix* acm) const
+{
+  FCLManager manager_self;
+  allocSelfCollisionBroadPhase(state, manager_self);
+  FCLObject fcl_obj;
+  constructFCLObjectRobot(state, fcl_obj);
+  if (res.size() != fcl_obj.collision_objects_.size())
+    res.resize(fcl_obj.collision_objects_.size());
+
+  for (std::size_t i = 0; i < fcl_obj.collision_objects_.size(); ++i)
+  {
+    CollisionResult res_self;
+    CollisionData cd_self(&req, &res_self, acm);
+    cd_self.enableGroup(getRobotModel());
+    manager_self.manager_->collide(fcl_obj.collision_objects_[i].get(), &cd_self, &collisionCallback);
+    res[i] = res_self;
+  }
+
+  if (req.distance)
+  {
+    DistanceRequest dreq;
+    std::vector<DistanceResult> dres;
+
+    dreq.group_name = req.group_name;
+    dreq.acm = acm;
+    dreq.enableGroup(getRobotModel());
+    distanceSelfVector(dreq, dres, state);
+    for(std::size_t i = 0; i < res.size(); ++i)
+      res[i].distance = dres[i].minimum_distance.distance;
+  }
+}
+void CollisionEnvFCL::checkRobotVectorCollisionHelper(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                                                const moveit::core::RobotState& state,
+                                                const AllowedCollisionMatrix* acm) const
+{
+  FCLObject fcl_obj;
+  constructFCLObjectRobot(state, fcl_obj);
+  if (res.size() != fcl_obj.collision_objects_.size())
+    res.resize(fcl_obj.collision_objects_.size());
+
+  for (std::size_t i = 0; i < fcl_obj.collision_objects_.size(); ++i)
+  {
+    CollisionResult res_env;
+    CollisionData cd_env(&req, &res_env, acm);
+    cd_env.enableGroup(getRobotModel());
+    manager_->collide(fcl_obj.collision_objects_[i].get(), &cd_env, &collisionCallback);
+    res[i] = res_env;
+  }
+
+  if (req.distance)
+  {
+    DistanceRequest dreq;
+    std::vector<DistanceResult> dres;
+
+    dreq.group_name = req.group_name;
+    dreq.acm = acm;
+    dreq.enableGroup(getRobotModel());
+    distanceRobotVector(dreq, dres, state);
+    for(std::size_t i = 0; i < res.size(); ++i)
+      res[i].distance = dres[i].minimum_distance.distance;
+  }
+}
+
+void CollisionEnvFCL::distanceSelfVector(const DistanceRequest& req, std::vector<DistanceResult>& res,
+                                        const moveit::core::RobotState& state) const
+{
+  FCLManager manager_self;
+  allocSelfCollisionBroadPhase(state, manager_self);
+  FCLObject fcl_obj;
+  constructFCLObjectRobot(state, fcl_obj);
+  if (res.size() != fcl_obj.collision_objects_.size())
+    res.resize(fcl_obj.collision_objects_.size());
+  for (std::size_t i = 0; i < fcl_obj.collision_objects_.size(); ++i)
+  {
+    DistanceResult res_self;
+    DistanceData drd_self(&req, &res_self);
+    manager_self.manager_->distance(fcl_obj.collision_objects_[i].get(), &drd_self, &distanceCallback);
+    res[i] = res_self;
+
+    // std::cout<<"geom["<<i<<"]: "<<res[i].minimum_distance.distance;
+    // std::cout<<"\t pair: "<<res[i].minimum_distance.link_names[0] << " " << res[i].minimum_distance.link_names[1] <<std::endl;
+  }
+}
+
+void CollisionEnvFCL::distanceRobotVector(const DistanceRequest& req, std::vector<DistanceResult>& res,
+                                        const moveit::core::RobotState& state) const
+{
+  FCLObject fcl_obj;
+  constructFCLObjectRobot(state, fcl_obj);
+  if (res.size() != fcl_obj.collision_objects_.size())
+    res.resize(fcl_obj.collision_objects_.size());
+  for (std::size_t i = 0; i < fcl_obj.collision_objects_.size(); ++i)
+  {
+    DistanceResult res_env;
+    DistanceData drd_env(&req, &res_env);
+    manager_->distance(fcl_obj.collision_objects_[i].get(), &drd_env, &distanceCallback);
+    res[i] = res_env;
+    // std::cout<<"geom["<<i<<"]: "<<res[i].minimum_distance.distance;
+    // std::cout<<"\t pair: "<<res[i].minimum_distance.link_names[0] << " " << res[i].minimum_distance.link_names[1] <<std::endl;
+  }
+}
+//------------------------------------------------------------------------------------------------------------------
 
 void CollisionEnvFCL::updateFCLObject(const std::string& id)
 {

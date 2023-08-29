@@ -496,6 +496,52 @@ public:
                       const moveit::core::RobotState& robot_state,
                       const collision_detection::AllowedCollisionMatrix& acm) const;
 
+
+  //------------------------------------------------------------------------------------------------------------------
+  /** \brief Check whether the current state is in collision, and if needed, updates the collision transforms of the
+   * current state before the computation. */
+  void checkCollisionVector(const collision_detection::CollisionRequest& req, std::vector<collision_detection::CollisionResult>& res);
+
+  /** \brief Check whether the current state is in collision. The current state is expected to be updated. */
+  void checkCollisionVector(const collision_detection::CollisionRequest& req, std::vector<collision_detection::CollisionResult>& res) const
+  {
+    checkCollisionVector(req, res, getCurrentState());
+  }
+
+  /** \brief Check whether a specified state (\e robot_state) is in collision. This variant of the function takes
+      a non-const \e robot_state and calls updateCollisionBodyTransforms() on it. */
+  void checkCollisionVector(const collision_detection::CollisionRequest& req, std::vector<collision_detection::CollisionResult>& res,
+                            moveit::core::RobotState& robot_state) const
+  {
+    robot_state.updateCollisionBodyTransforms();
+    checkCollisionVector(req, res, static_cast<const moveit::core::RobotState&>(robot_state));
+  }
+
+  /** \brief Check whether a specified state (\e robot_state) is in collision. The collision transforms of \e
+   * robot_state are
+   * expected to be up to date. */
+  void checkCollisionVector(const collision_detection::CollisionRequest& req, std::vector<collision_detection::CollisionResult>& res,
+                            const moveit::core::RobotState& robot_state) const;
+
+  /** \brief Check whether a specified state (\e robot_state) is in collision, with respect to a given
+      allowed collision matrix (\e acm). This variant of the function takes
+      a non-const \e robot_state and updates its link transforms if needed. */
+  void checkCollisionVector(const collision_detection::CollisionRequest& req, std::vector<collision_detection::CollisionResult>& res,
+                            moveit::core::RobotState& robot_state,
+                            const collision_detection::AllowedCollisionMatrix& acm) const
+  {
+    robot_state.updateCollisionBodyTransforms();
+    checkCollisionVector(req, res, static_cast<const moveit::core::RobotState&>(robot_state), acm);
+  }
+
+  /** \brief Check whether a specified state (\e robot_state) is in collision, with respect to a given
+      allowed collision matrix (\e acm). */
+  void checkCollisionVector(const collision_detection::CollisionRequest& req, std::vector<collision_detection::CollisionResult>& res,
+                            const moveit::core::RobotState& robot_state,
+                            const collision_detection::AllowedCollisionMatrix& acm) const;
+  //------------------------------------------------------------------------------------------------------------------
+
+
   /** \brief Check whether the current state is in collision,
       but use a collision_detection::CollisionRobot instance that has no padding.
       Since the function is non-const, the current state transforms are also updated if needed. */

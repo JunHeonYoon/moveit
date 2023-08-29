@@ -90,6 +90,27 @@ public:
 
   void setWorld(const WorldPtr& world) override;
 
+//------------------------------------------------------------------------------------------------------------------
+  void checkSelfVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                         const moveit::core::RobotState& state) const override;
+
+  void checkSelfVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res, const moveit::core::RobotState& state,
+                         const AllowedCollisionMatrix& acm) const override;
+
+  void checkRobotVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                         const moveit::core::RobotState& state) const override;
+
+  void checkRobotVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res, const moveit::core::RobotState& state,
+                         const AllowedCollisionMatrix& acm) const override;
+
+  void distanceSelfVector(const DistanceRequest& req, std::vector<DistanceResult>& res,
+                   const moveit::core::RobotState& state) const override;
+
+  void distanceRobotVector(const DistanceRequest& req, std::vector<DistanceResult>& res,
+                   const moveit::core::RobotState& state) const override;
+//------------------------------------------------------------------------------------------------------------------
+
+
 protected:
   /** \brief Updates the FCL collision geometry and objects saved in the CollisionRobotFCL members to reflect a new
    *   padding or scaling of the robot links.
@@ -107,6 +128,15 @@ protected:
   /** \brief Bundles the different checkRobotCollision functions into a single function */
   void checkRobotCollisionHelper(const CollisionRequest& req, CollisionResult& res,
                                  const moveit::core::RobotState& state, const AllowedCollisionMatrix* acm) const;
+//------------------------------------------------------------------------------------------------------------------
+  /** \brief Bundles the different checkRobotCollision functions into a single function */
+  void checkSelfVectorCollisionHelper(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                                 const moveit::core::RobotState& state, const AllowedCollisionMatrix* acm) const;
+  
+  /** \brief Bundles the different checkRobotCollision functions into a single function */
+  void checkRobotVectorCollisionHelper(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                                 const moveit::core::RobotState& state, const AllowedCollisionMatrix* acm) const;
+  //------------------------------------------------------------------------------------------------------------------
 
   /** \brief Construct an FCL collision object from MoveIt's World::Object. */
   void constructFCLObjectWorld(const World::Object* obj, FCLObject& fcl_obj) const;

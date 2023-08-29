@@ -142,4 +142,58 @@ const std::string& CollisionDetectorAllocatorAllValid::getName() const
   return NAME;
 }
 
+//-----------------------------------------------------------------------------------------------
+void CollisionEnvAllValid::checkSelfVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                                              const moveit::core::RobotState& /*state*/) const
+{
+  res.resize(0);
+  res[0].collision = false;
+  if (req.verbose)
+    ROS_INFO_NAMED("collision_detection", "Using AllValid collision detection. No collision checking is performed.");
+}
+
+void CollisionEnvAllValid::checkSelfVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                                              const moveit::core::RobotState& /*state*/,
+                                              const AllowedCollisionMatrix& /*acm*/) const
+{
+  res.resize(0);
+  res[0].collision = false;
+  if (req.verbose)
+    ROS_INFO_NAMED("collision_detection", "Using AllValid collision detection. No collision checking is performed.");
+}
+
+void CollisionEnvAllValid::checkRobotVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                                               const moveit::core::RobotState& /*state*/) const
+{
+  res.resize(0);
+  res[0].collision = false;
+  if (req.verbose)
+    ROS_INFO_NAMED("collision_detection", "Using AllValid collision detection. No collision checking is performed.");
+}
+
+void CollisionEnvAllValid::checkRobotVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                                               const moveit::core::RobotState& /*state*/,
+                                               const AllowedCollisionMatrix& /*acm*/) const
+{
+  res.resize(0);
+  res[0].collision = false;
+  if (req.verbose)
+    ROS_INFO_NAMED("collision_detection", "Using AllValid collision detection. No collision checking is performed.");
+}
+
+void CollisionEnvAllValid::distanceRobotVector(const DistanceRequest& /*req*/, std::vector<DistanceResult>& res,
+                                         const moveit::core::RobotState& /*state*/) const
+{
+  res.resize(0);
+  res[0].collision = false;
+}
+
+void CollisionEnvAllValid::distanceSelfVector(const DistanceRequest& /*req*/, std::vector<DistanceResult>& res,
+                                        const moveit::core::RobotState& /*state*/) const
+{
+  res.resize(0);
+  res[0].collision = false;
+}
+//-----------------------------------------------------------------------------------------------
+
 }  // namespace collision_detection

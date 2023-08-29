@@ -18,9 +18,9 @@ find_package(Bullet 2.87)
 
 # TODO(j-petit): Version check can be dropped when Xenial reaches end-of-life
 if(BULLET_FOUND)
-  set(BULLET_ENABLE "BULLET")
-  set(BULLET_LIB "moveit_collision_detection_bullet")
-  set(BULLET_INC "collision_detection_bullet/include")
+  # set(BULLET_ENABLE "BULLET")
+  # set(BULLET_LIB "moveit_collision_detection_bullet")
+  # set(BULLET_INC "collision_detection_bullet/include")
   message(STATUS "Compiling with Bullet")
 else()
   message(STATUS "Version of Bullet too old or not available: disabling Bullet collision detection plugin. Try using Ubuntu 18.04 or later.")

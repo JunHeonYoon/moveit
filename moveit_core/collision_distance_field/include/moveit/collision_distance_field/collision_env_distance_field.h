@@ -197,6 +197,26 @@ public:
     ROS_ERROR_NAMED("collision_distance_field", "Not implemented");
   }
 
+  //------------------------------------------------------------------------------------------------------------------
+  void checkSelfVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                         const moveit::core::RobotState& state) const override;
+
+  void checkSelfVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res, const moveit::core::RobotState& state,
+                         const AllowedCollisionMatrix& acm) const override;
+
+  void checkRobotVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                         const moveit::core::RobotState& state) const override;
+
+  void checkRobotVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res, const moveit::core::RobotState& state,
+                         const AllowedCollisionMatrix& acm) const override;
+
+  void distanceSelfVector(const DistanceRequest& req, std::vector<DistanceResult>& res,
+                   const moveit::core::RobotState& state) const override;
+
+  void distanceRobotVector(const DistanceRequest& req, std::vector<DistanceResult>& res,
+                   const moveit::core::RobotState& state) const override;
+//------------------------------------------------------------------------------------------------------------------
+
   void setWorld(const WorldPtr& world) override;
 
   distance_field::DistanceFieldConstPtr getDistanceField() const

@@ -497,6 +497,43 @@ void PlanningScene::checkCollision(const collision_detection::CollisionRequest& 
     getCollisionEnvUnpadded()->checkSelfCollision(req, res, robot_state, acm);
 }
 
+//-----------------------------------------------------------------------------------------------
+void PlanningScene::checkCollisionVector(const collision_detection::CollisionRequest& req,
+                                         std::vector<collision_detection::CollisionResult>& res)
+{
+  if (getCurrentState().dirtyCollisionBodyTransforms())
+    checkCollisionVector(req, res, getCurrentStateNonConst());
+  else
+    checkCollisionVector(req, res, getCurrentState());
+}
+
+void PlanningScene::checkCollisionVector(const collision_detection::CollisionRequest& req,
+                                         std::vector<collision_detection::CollisionResult>& res,
+                                         const moveit::core::RobotState& robot_state) const
+{
+  checkCollisionVector(req, res, robot_state, getAllowedCollisionMatrix());
+}
+
+void PlanningScene::checkCollisionVector(const collision_detection::CollisionRequest& req,
+                                         std::vector<collision_detection::CollisionResult>& res,
+                                         const moveit::core::RobotState& robot_state,
+                                         const collision_detection::AllowedCollisionMatrix& acm) const
+{
+  std::vector<collision_detection::CollisionResult> res_self, res_env;
+  getCollisionEnv()->checkRobotVectorCollision(req, res_env, robot_state, acm);
+  getCollisionEnvUnpadded()->checkSelfVectorCollision(req, res_self, robot_state, acm);
+  res.resize(res_env.size());
+  for(std::size_t i = 0; i < res_env.size(); ++i)
+  {
+    if (res_env[i].distance < res_self[i].distance)
+      res[i] = res_env[i];
+    else
+      res[i] = res_self[i];
+  }
+}
+//-----------------------------------------------------------------------------------------------
+
+
 void PlanningScene::checkCollisionUnpadded(const collision_detection::CollisionRequest& req,
                                            collision_detection::CollisionResult& res)
 {

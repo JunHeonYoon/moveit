@@ -1694,6 +1694,47 @@ bool CollisionEnvDistanceField::getEnvironmentProximityGradients(
   return in_collision;
 }
 
+
+
+
+//------------------------------------------------------------------------------------------------------------------
+void CollisionEnvDistanceField::checkSelfVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                                          const moveit::core::RobotState& state) const
+{
+}
+
+void CollisionEnvDistanceField::checkSelfVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                                          const moveit::core::RobotState& state,
+                                          const AllowedCollisionMatrix& acm) const
+{
+}
+
+void CollisionEnvDistanceField::checkRobotVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                                          const moveit::core::RobotState& state) const
+{
+}
+
+void CollisionEnvDistanceField::checkRobotVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                                          const moveit::core::RobotState& state,
+                                          const AllowedCollisionMatrix& acm) const
+{
+}
+
+
+void CollisionEnvDistanceField::distanceSelfVector(const DistanceRequest& req, std::vector<DistanceResult>& res,
+                                        const moveit::core::RobotState& state) const
+{
+}
+
+void CollisionEnvDistanceField::distanceRobotVector(const DistanceRequest& req, std::vector<DistanceResult>& res,
+                                        const moveit::core::RobotState& state) const
+{
+}
+//------------------------------------------------------------------------------------------------------------------
+
+
+
+
 void CollisionEnvDistanceField::setWorld(const WorldPtr& world)
 {
   if (world == getWorld())
