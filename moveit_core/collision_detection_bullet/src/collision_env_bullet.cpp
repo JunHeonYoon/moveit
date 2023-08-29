@@ -296,6 +296,41 @@ void CollisionEnvBullet::updateManagedObject(const std::string& id)
   }
 }
 
+//------------------------------------------------------------------------------------------------------------------
+void CollisionEnvBullet::checkSelfVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                                          const moveit::core::RobotState& state) const
+{
+}
+
+void CollisionEnvBullet::checkSelfVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                                          const moveit::core::RobotState& state,
+                                          const AllowedCollisionMatrix& acm) const
+{
+}
+
+void CollisionEnvBullet::checkRobotVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                                          const moveit::core::RobotState& state) const
+{
+}
+
+void CollisionEnvBullet::checkRobotVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
+                                          const moveit::core::RobotState& state,
+                                          const AllowedCollisionMatrix& acm) const
+{
+}
+
+
+void CollisionEnvBullet::distanceSelfVector(const DistanceRequest& req, std::vector<DistanceResult>& res,
+                                        const moveit::core::RobotState& state) const
+{
+}
+
+void CollisionEnvBullet::distanceRobotVector(const DistanceRequest& req, std::vector<DistanceResult>& res,
+                                        const moveit::core::RobotState& state) const
+{
+}
+//------------------------------------------------------------------------------------------------------------------
+
 void CollisionEnvBullet::setWorld(const WorldPtr& world)
 {
   if (world == getWorld())
