@@ -522,6 +522,11 @@ void PlanningScene::checkCollisionVector(const collision_detection::CollisionReq
   std::vector<collision_detection::CollisionResult> res_self, res_env;
   getCollisionEnv()->checkRobotVectorCollision(req, res_env, robot_state, acm);
   getCollisionEnvUnpadded()->checkSelfVectorCollision(req, res_self, robot_state, acm);
+
+  // std::cout << "res_env  size: " << res_env.size() << std::endl;
+  // std::cout << "res_self size: " << res_self.size() << std::endl;
+
+
   res.resize(res_env.size());
   for(std::size_t i = 0; i < res_env.size(); ++i)
   {

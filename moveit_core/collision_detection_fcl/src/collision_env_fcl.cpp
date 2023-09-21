@@ -205,6 +205,7 @@ void CollisionEnvFCL::constructFCLObjectRobot(const moveit::core::RobotState& st
   for (std::size_t i = 0; i < robot_geoms_.size(); ++i)
     if (robot_geoms_[i] && robot_geoms_[i]->collision_geometry_)
     {
+      // std::cout<< "robot_geoms["<<i<<"]: "<<robot_geoms_[i]->collision_geometry_data_->ptr.link->getName()<<std::endl;
       transform2fcl(state.getCollisionBodyTransform(robot_geoms_[i]->collision_geometry_data_->ptr.link,
                                                     robot_geoms_[i]->collision_geometry_data_->shape_index),
                     fcl_tf);
@@ -393,8 +394,8 @@ void CollisionEnvFCL::checkSelfVectorCollisionHelper(const CollisionRequest& req
   allocSelfCollisionBroadPhase(state, manager_self);
   FCLObject fcl_obj;
   constructFCLObjectRobot(state, fcl_obj);
-  if (res.size() != fcl_obj.collision_objects_.size())
-    res.resize(fcl_obj.collision_objects_.size());
+  // if (res.size() != fcl_obj.collision_objects_.size())
+  //   res.resize(fcl_obj.collision_objects_.size());
 
   for (std::size_t i = 0; i < fcl_obj.collision_objects_.size(); ++i)
   {
@@ -402,7 +403,26 @@ void CollisionEnvFCL::checkSelfVectorCollisionHelper(const CollisionRequest& req
     CollisionData cd_self(&req, &res_self, acm);
     cd_self.enableGroup(getRobotModel());
     manager_self.manager_->collide(fcl_obj.collision_objects_[i].get(), &cd_self, &collisionCallback);
-    res[i] = res_self;
+    // res[i] = res_self;
+    const std::string link_name = robot_geoms_[i]->collision_geometry_data_->ptr.link->getName();
+    if (i == 0)
+    {
+      res.resize(1);
+      res[i] = res_self;
+    }
+    else
+    {
+      if (link_name.compare(robot_geoms_[i - 1]->collision_geometry_data_->ptr.link->getName()) == 0)
+      {
+            // std::cout<< "compare link: " << link_name << ", " << robot_geoms_[i - 1]->collision_geometry_data_->ptr.link->getName() <<std::endl;
+        if(res_self.collision && !res[i].collision)
+          res[i] = res_self;
+      }
+      else
+      {
+        res.push_back(res_self);
+      }
+    }
   }
 
   if (req.distance)
@@ -433,7 +453,26 @@ void CollisionEnvFCL::checkRobotVectorCollisionHelper(const CollisionRequest& re
     CollisionData cd_env(&req, &res_env, acm);
     cd_env.enableGroup(getRobotModel());
     manager_->collide(fcl_obj.collision_objects_[i].get(), &cd_env, &collisionCallback);
-    res[i] = res_env;
+    // res[i] = res_env;
+    const std::string link_name = robot_geoms_[i]->collision_geometry_data_->ptr.link->getName();
+    if (i == 0)
+    {
+      res.resize(1);
+      res[i] = res_env;
+    }
+    else
+    {
+      if (link_name.compare(robot_geoms_[i - 1]->collision_geometry_data_->ptr.link->getName()) == 0)
+      {
+            // std::cout<< "compare link: " << link_name << ", " << robot_geoms_[i - 1]->collision_geometry_data_->ptr.link->getName() <<std::endl;
+        if(res_env.collision && !res[i].collision)
+          res[i] = res_env;
+      }
+      else
+      {
+        res.push_back(res_env);
+      }
+    }
   }
 
   if (req.distance)
@@ -457,17 +496,44 @@ void CollisionEnvFCL::distanceSelfVector(const DistanceRequest& req, std::vector
   allocSelfCollisionBroadPhase(state, manager_self);
   FCLObject fcl_obj;
   constructFCLObjectRobot(state, fcl_obj);
-  if (res.size() != fcl_obj.collision_objects_.size())
-    res.resize(fcl_obj.collision_objects_.size());
+  // if (res.size() != fcl_obj.collision_objects_.size())
+  //   res.resize(fcl_obj.collision_objects_.size());
+  // for (std::size_t i = 0; i < fcl_obj.collision_objects_.size(); ++i)
+  // {
+  //   DistanceResult res_self;
+  //   DistanceData drd_self(&req, &res_self);
+  //   manager_self.manager_->distance(fcl_obj.collision_objects_[i].get(), &drd_self, &distanceCallback);
+  //   res[i] = res_self;
+
+  //   // std::cout<<"geom["<<i<<"]: "<<res[i].minimum_distance.distance;
+  //   // std::cout<<"\t pair: "<<res[i].minimum_distance.link_names[0] << " " << res[i].minimum_distance.link_names[1] <<std::endl;
+  // }
+
   for (std::size_t i = 0; i < fcl_obj.collision_objects_.size(); ++i)
   {
     DistanceResult res_self;
     DistanceData drd_self(&req, &res_self);
     manager_self.manager_->distance(fcl_obj.collision_objects_[i].get(), &drd_self, &distanceCallback);
-    res[i] = res_self;
+    const std::string link_name = robot_geoms_[i]->collision_geometry_data_->ptr.link->getName();
+    if (i == 0)
+    {
+      res.resize(1);
+      res[i] = res_self;
+    }
+    else
+    {
+      if (link_name.compare(robot_geoms_[i - 1]->collision_geometry_data_->ptr.link->getName()) == 0)
+      {
+            // std::cout<< "compare link: " << link_name << ", " << robot_geoms_[i - 1]->collision_geometry_data_->ptr.link->getName() <<std::endl;
+        if(res_self.minimum_distance.distance < res[i].minimum_distance.distance)
+          res[i] = res_self;
+      }
+      else
+      {
 
-    // std::cout<<"geom["<<i<<"]: "<<res[i].minimum_distance.distance;
-    // std::cout<<"\t pair: "<<res[i].minimum_distance.link_names[0] << " " << res[i].minimum_distance.link_names[1] <<std::endl;
+        res.push_back(res_self);
+      }
+    }
   }
 }
 
@@ -478,14 +544,40 @@ void CollisionEnvFCL::distanceRobotVector(const DistanceRequest& req, std::vecto
   constructFCLObjectRobot(state, fcl_obj);
   if (res.size() != fcl_obj.collision_objects_.size())
     res.resize(fcl_obj.collision_objects_.size());
+  // for (std::size_t i = 0; i < fcl_obj.collision_objects_.size(); ++i)
+  // {
+  //   DistanceResult res_env;
+  //   DistanceData drd_env(&req, &res_env);
+  //   manager_->distance(fcl_obj.collision_objects_[i].get(), &drd_env, &distanceCallback);
+  //   res[i] = res_env;
+  //   // std::cout<<"geom["<<i<<"]: "<<res[i].minimum_distance.distance;
+  //   // std::cout<<"\t pair: "<<res[i].minimum_distance.link_names[0] << " " << res[i].minimum_distance.link_names[1] <<std::endl;
+  // }
+
   for (std::size_t i = 0; i < fcl_obj.collision_objects_.size(); ++i)
   {
     DistanceResult res_env;
     DistanceData drd_env(&req, &res_env);
     manager_->distance(fcl_obj.collision_objects_[i].get(), &drd_env, &distanceCallback);
-    res[i] = res_env;
-    // std::cout<<"geom["<<i<<"]: "<<res[i].minimum_distance.distance;
-    // std::cout<<"\t pair: "<<res[i].minimum_distance.link_names[0] << " " << res[i].minimum_distance.link_names[1] <<std::endl;
+    const std::string link_name = robot_geoms_[i]->collision_geometry_data_->ptr.link->getName();
+    if (i == 0)
+    {
+      res.resize(1);
+      res[i] = res_env;
+    }
+    else
+    {
+
+      if (link_name.compare(robot_geoms_[i - 1]->collision_geometry_data_->ptr.link->getName()) == 0)
+      {
+        if(res_env.minimum_distance.distance < res[i].minimum_distance.distance)
+          res[i] = res_env;
+      }
+      else
+      {
+        res.push_back(res_env);
+      }
+    }
   }
 }
 //------------------------------------------------------------------------------------------------------------------
