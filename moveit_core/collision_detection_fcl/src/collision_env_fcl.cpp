@@ -316,7 +316,17 @@ void CollisionEnvFCL::checkRobotCollisionHelper(const CollisionRequest& req, Col
   CollisionData cd(&req, &res, acm);
   cd.enableGroup(getRobotModel());
   for (std::size_t i = 0; !cd.done_ && i < fcl_obj.collision_objects_.size(); ++i)
-    manager_->collide(fcl_obj.collision_objects_[i].get(), &cd, &collisionCallback);
+  {
+    //--------------------------------------------------------------------------
+    const std::string link_name = robot_geoms_[i]->collision_geometry_data_->ptr.link->getName();
+    if (link_name.compare("base") != 0)
+    {
+      manager_->collide(fcl_obj.collision_objects_[i].get(), &cd, &collisionCallback);
+    }
+    //--------------------------------------------------------------------------
+  }
+
+    
 
   if (req.distance)
   {
@@ -354,7 +364,13 @@ void CollisionEnvFCL::distanceRobot(const DistanceRequest& req, DistanceResult& 
   DistanceData drd(&req, &res);
   for (std::size_t i = 0; !drd.done && i < fcl_obj.collision_objects_.size(); ++i)
   {
-    manager_->distance(fcl_obj.collision_objects_[i].get(), &drd, &distanceCallback);
+    //--------------------------------------------------------------------------
+    const std::string link_name = robot_geoms_[i]->collision_geometry_data_->ptr.link->getName();
+    if (link_name.compare("base") != 0)
+    {
+      manager_->distance(fcl_obj.collision_objects_[i].get(), &drd, &distanceCallback);
+    }
+    //--------------------------------------------------------------------------
   }
 }
 
