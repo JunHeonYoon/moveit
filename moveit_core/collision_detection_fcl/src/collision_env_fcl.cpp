@@ -268,6 +268,7 @@ void CollisionEnvFCL::checkSelfCollisionHelper(const CollisionRequest& req, Coll
   if (req.distance)
   {
     DistanceRequest dreq;
+    dreq.enable_signed_distance = true;
     DistanceResult dres;
 
     dreq.group_name = req.group_name;
@@ -331,6 +332,7 @@ void CollisionEnvFCL::checkRobotCollisionHelper(const CollisionRequest& req, Col
   if (req.distance)
   {
     DistanceRequest dreq;
+    dreq.enable_signed_distance = true;
     DistanceResult dres;
 
     dreq.group_name = req.group_name;
@@ -445,6 +447,7 @@ void CollisionEnvFCL::checkSelfVectorCollisionHelper(const CollisionRequest& req
   if (req.distance)
   {
     DistanceRequest dreq;
+    dreq.enable_signed_distance = true;
     std::vector<DistanceResult> dres;
 
     dreq.group_name = req.group_name;
@@ -496,6 +499,7 @@ void CollisionEnvFCL::checkRobotVectorCollisionHelper(const CollisionRequest& re
   if (req.distance)
   {
     DistanceRequest dreq;
+    dreq.enable_signed_distance = true;
     std::vector<DistanceResult> dres;
 
     dreq.group_name = req.group_name;
