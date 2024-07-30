@@ -297,6 +297,8 @@ void CollisionEnvBullet::updateManagedObject(const std::string& id)
 }
 
 //------------------------------------------------------------------------------------------------------------------
+//---------------------------------- updated by junheon -----------------------------------------
+
 void CollisionEnvBullet::checkSelfVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
                                           const moveit::core::RobotState& state) const
 {

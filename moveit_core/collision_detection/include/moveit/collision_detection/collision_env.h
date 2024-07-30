@@ -226,8 +226,8 @@ public:
     return res.minimum_distance.distance;
   }
 
-
   //------------------------------------------------------------------------------------------------------------------
+  //---------------------------------- updated by junheon -----------------------------------------
   /** @brief Check for robot self collision. Any collision between any pair of links is checked for, NO collisions are
    *   ignored.
    *

@@ -73,6 +73,8 @@ public:
   void distanceSelf(const DistanceRequest& req, DistanceResult& res,
                     const moveit::core::RobotState& state) const override;
 //-----------------------------------------------------------------------------------------------
+//---------------------------------- updated by junheon -----------------------------------------
+
   void checkRobotVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
                            const moveit::core::RobotState& state) const override;
   void checkRobotVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res, const moveit::core::RobotState& state,

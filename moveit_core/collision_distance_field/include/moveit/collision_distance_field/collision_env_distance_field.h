@@ -197,7 +197,8 @@ public:
     ROS_ERROR_NAMED("collision_distance_field", "Not implemented");
   }
 
-  //------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
+  //---------------------------------- updated by junheon -----------------------------------------
   void checkSelfVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
                          const moveit::core::RobotState& state) const override;
 

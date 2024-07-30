@@ -143,6 +143,8 @@ const std::string& CollisionDetectorAllocatorAllValid::getName() const
 }
 
 //-----------------------------------------------------------------------------------------------
+//---------------------------------- updated by junheon -----------------------------------------
+
 void CollisionEnvAllValid::checkSelfVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
                                               const moveit::core::RobotState& /*state*/) const
 {

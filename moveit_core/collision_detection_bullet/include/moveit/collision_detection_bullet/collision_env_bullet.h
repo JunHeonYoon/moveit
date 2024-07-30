@@ -85,6 +85,8 @@ public:
                      const moveit::core::RobotState& state) const override;
 
   //------------------------------------------------------------------------------------------------------------------
+  //---------------------------------- updated by junheon -----------------------------------------
+
   void checkSelfVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
                          const moveit::core::RobotState& state) const override;
 

@@ -1698,6 +1698,7 @@ bool CollisionEnvDistanceField::getEnvironmentProximityGradients(
 
 
 //------------------------------------------------------------------------------------------------------------------
+//---------------------------------- updated by junheon -----------------------------------------
 void CollisionEnvDistanceField::checkSelfVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
                                           const moveit::core::RobotState& state) const
 {

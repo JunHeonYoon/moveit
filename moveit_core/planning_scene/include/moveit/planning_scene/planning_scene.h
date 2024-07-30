@@ -498,6 +498,7 @@ public:
 
 
   //------------------------------------------------------------------------------------------------------------------
+  //---------------------------------- updated by junheon -----------------------------------------
   /** \brief Check whether the current state is in collision, and if needed, updates the collision transforms of the
    * current state before the computation. */
   void checkCollisionVector(const collision_detection::CollisionRequest& req, std::vector<collision_detection::CollisionResult>& res);

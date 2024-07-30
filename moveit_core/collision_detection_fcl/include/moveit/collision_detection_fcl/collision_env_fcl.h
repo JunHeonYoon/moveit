@@ -91,6 +91,8 @@ public:
   void setWorld(const WorldPtr& world) override;
 
 //------------------------------------------------------------------------------------------------------------------
+//---------------------------------- updated by junheon -----------------------------------------
+
   void checkSelfVectorCollision(const CollisionRequest& req, std::vector<CollisionResult>& res,
                          const moveit::core::RobotState& state) const override;
 
@@ -129,6 +131,7 @@ protected:
   void checkRobotCollisionHelper(const CollisionRequest& req, CollisionResult& res,
                                  const moveit::core::RobotState& state, const AllowedCollisionMatrix* acm) const;
 //------------------------------------------------------------------------------------------------------------------
+//---------------------------------- updated by junheon -----------------------------------------
   /** \brief Bundles the different checkRobotCollision functions into a single function */
   void checkSelfVectorCollisionHelper(const CollisionRequest& req, std::vector<CollisionResult>& res,
                                  const moveit::core::RobotState& state, const AllowedCollisionMatrix* acm) const;
