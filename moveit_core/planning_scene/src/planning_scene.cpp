@@ -491,13 +491,20 @@ void PlanningScene::checkCollision(const collision_detection::CollisionRequest& 
 {
   // check collision with the world using the padded version
   getCollisionEnv()->checkRobotCollision(req, res, robot_state, acm);
+
+  // updated by junheon
+  double tmp_distance = res.distance;
   
-  // // do self-collision checking with the unpadded version of the robot
-  if (!res.collision || (req.contacts && res.contacts.size() < req.max_contacts))
+  // do self-collision checking with the unpadded version of the robot
+  if (!res.collision || (req.contacts && res.contacts.size() < req.max_contacts) || req.distance)
+  {
     getCollisionEnvUnpadded()->checkSelfCollision(req, res, robot_state, acm);
+    if (req.distance) res.distance = std::min(res.distance, tmp_distance);
+  }
 }
 
 //-----------------------------------------------------------------------------------------------
+//---------------------------------- updated by junheon -----------------------------------------
 void PlanningScene::checkCollisionVector(const collision_detection::CollisionRequest& req,
                                          std::vector<collision_detection::CollisionResult>& res)
 {
