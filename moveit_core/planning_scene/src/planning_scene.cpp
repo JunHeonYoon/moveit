@@ -505,6 +505,41 @@ void PlanningScene::checkCollision(const collision_detection::CollisionRequest& 
 
 //-----------------------------------------------------------------------------------------------
 //---------------------------------- updated by junheon -----------------------------------------
+void PlanningScene::checkCollision(const collision_detection::CollisionRequest& req,
+                                   collision_detection::CollisionResult& res,
+                                   const bool is_self, const bool is_env)
+{
+  if (getCurrentState().dirtyCollisionBodyTransforms())
+    checkCollision(req, res, getCurrentStateNonConst(), is_self, is_env);
+  else
+    checkCollision(req, res, getCurrentState(), is_self, is_env);
+}
+
+void PlanningScene::checkCollision(const collision_detection::CollisionRequest& req,
+                                   collision_detection::CollisionResult& res,
+                                   const moveit::core::RobotState& robot_state,
+                                   const bool is_self, const bool is_env) const
+{
+  checkCollision(req, res, robot_state, getAllowedCollisionMatrix(), is_self, is_env);
+}
+
+void PlanningScene::checkCollision(const collision_detection::CollisionRequest& req,
+                                   collision_detection::CollisionResult& res,
+                                   const moveit::core::RobotState& robot_state,
+                                   const collision_detection::AllowedCollisionMatrix& acm,
+                                   const bool is_self, const bool is_env) const
+{
+  if(!is_self && is_env)
+    // check collision with the world using the padded version
+    getCollisionEnv()->checkRobotCollision(req, res, robot_state, acm);
+  else if(is_self && !is_env)  
+    // do self-collision checking with the unpadded version of the robot
+    getCollisionEnvUnpadded()->checkSelfCollision(req, res, robot_state, acm);
+  else if(is_self && is_env)
+    checkCollision(req, res, robot_state, acm);
+  
+}
+
 void PlanningScene::checkCollisionVector(const collision_detection::CollisionRequest& req,
                                          std::vector<collision_detection::CollisionResult>& res)
 {
